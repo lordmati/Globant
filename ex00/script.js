@@ -7,10 +7,13 @@ const gridCells = [];
 
 btnRestart.addEventListener('click', () => {
     clearGrid();
+    scoreReset();
     spawnTwoStartingTiles();
 });
 
-
+function scoreReset() {
+    scoreElement.textContent = '0';
+}
 
 function clearGrid() {
     for (let i = 0; i < gridCells.length; i++) {
@@ -21,86 +24,220 @@ function clearGrid() {
         }
     }
 }
+function isBoardFull() {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            const cell = getCell(i, j);
+            if (cell.textContent === '') {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
+function isGameOver() {
+    if (!isBoardFull()) {
+        return false;
+    }
+    if (checkTableNumber()) {
+        return false;
+    }
+    return true;
+}
+
+function checkTableNumber(){
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 3; j++) {
+            const cell = parseInt(getCell(i, j).textContent);
+            const cell2 = parseInt(getCell(i, j + 1).textContent);
+            if(cell === cell2){
+                return true;
+            }
+        }
+    }
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 4; j++) {
+            const cell = parseInt(getCell(i, j).textContent);
+            const cell2 = parseInt(getCell(i + 1, j).textContent);
+            if(cell === cell2){
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 function checkMove(event){
     if (event.key === 'ArrowUp'){
-        moveUp();
-        spawnRandomTile(Math.random() < 0.9 ? 2 : 4);
-        console.log('move up');
+        if(!isGameOver()){
+            moveUp();
+        }
+        else{
+            console.log('Game Over');
+        }
     }
     else if(event.key === 'ArrowDown'){
-        spawnRandomTile(Math.random() < 0.9 ? 2 : 4);
-        console.log('move down');
+        if(!isGameOver()){
+            moveDown();
+        }
+        else{
+            console.log('Game Over');
+        }
     }
     else if(event.key === 'ArrowLeft'){
-        spawnRandomTile(Math.random() < 0.9 ? 2 : 4);
-        console.log('move left');
+        if(!isGameOver()){
+            moveLeft();
+        }
+        else{
+            console.log('Game Over');
+        }
     }
     else if(event.key === 'ArrowRight'){
-        spawnRandomTile(Math.random() < 0.9 ? 2 : 4);
-        console.log('move right');
+        if(!isGameOver()){
+            moveRight();
+        }
+        else{
+            console.log('Game Over');
+        }
     }
 }
 
 function getCell(row, col) {
     return document.querySelector(`#cell-${row}-${col}`);
 }
-
-function cellUnion(cell1, cell2) {
-    if (cell1.textContent === cell2.textContent && cell1.textContent !== '') {
-        let newValue = parseInt(cell1.textContent) * 2;
-        cell1.textContent = String(newValue);
-        cell1.className = 'cell';
-        console.log("este numero",cell1.textContent);
-        cell1.classList.add(`tile-${newValue}`);
-        cell2.textContent = '';
-        cell2.className = 'cell';
-        return true;
-    }
-    return false;
-}
-function updateCell(cell) {
-    let number = parseInt(cell.textContent);
+function updateCell(cell,value) {
+    
+    cell.textContent = value > 0 ? String(value) : '';
     cell.className = 'cell';
-    cell.classList.add(`tile-${number}`);
-}
-function moveUp() {
-    let i = 0;
-    let countcell = 0;
-    let j = 0;
-    while(i < 3){
-        let cell = getCell(i, 0);
-        if (cell.textContent !== ''){
-            countcell++;
-        }
-        else{
-            j = i;
-        }
-        i++;
+    if (value > 0) {
+        cell.classList.add(`tile-${value}`);
     }
-    if (countcell == 1){
-        if (getCell(0,0).textContent === ''){
-            updateCell(getCell(j,0));
-        }
-    }
-/*     while(i < 2){
-        let cell = getCell(i, 0);
-        if (cell.textContent === ''){
-            i++;
-            continue;
-        }
-        else{
-            let belowCell = getCell(i + 1, 0);
-            if (belowCell.textContent === ''){
-            }
-        }
-    } */
-    let cell = getCell(0, 0);
-    let cell2 = getCell(1, 0);
-    cellUnion(cell, cell2);
 }
 
+function makeColumnArray(col){
+    const arr = [];
+    for (let j = 0; j < 4; j++){
+        const cell = getCell(j, col);
+        if(cell.textContent === ''){
+            arr.push(0);
+        }
+        else{
+            arr.push(parseInt(cell.textContent));
+        }
+    }
+    return arr;
+}
+
+function makeRowArray(row){
+    const arr = [];
+    for (let j = 0; j < 4; j++){
+        const cell = getCell(row, j);
+        if(cell.textContent === ''){
+            arr.push(0);
+        }
+        else{
+            arr.push(parseInt(cell.textContent));
+        }
+    }
+    return arr;
+}
+
+function processLine(arr){
+    const orig = arr.slice();
+    const nums = arr.filter(n => n !== 0);
+    for (let i = 0; i < nums.length - 1; i++){
+        if(nums[i] === nums[i + 1]){
+            nums[i] *= 2;
+            nums.splice(i + 1, 1);
+            scoreUpdate(nums[i]);
+        }
+    }
+    while (nums.length < 4){
+        nums.push(0);
+    }
+    let changed = false;
+    for (let i = 0; i < 4; i++){
+        if (nums[i] !== orig[i]){
+            changed = true;
+            break;
+        }
+    }
+    return {newArr: nums, changed: changed};
+}
+
+//Functions to move in each direction
+
+function moveUp() {
+    var flag = false;
+    for(let col = 0; col < 4; col++){
+        const arr = makeColumnArray(col);
+        const {newArr, changed} = processLine(arr);
+        for(let row = 0; row < 4; row++){
+            const cell = getCell(row, col);
+            updateCell(cell,newArr[row]);
+        }
+        if (changed) {
+            flag = true;
+        }
+    }
+    if (flag) {
+        spawnRandomTile(Math.random() < 0.9 ? 2 : 4);
+    }
+}
+
+function moveDown() {
+    var flag = false;
+    for(let col = 0; col < 4; col++){
+        const arr = makeColumnArray(col).reverse();
+        const {newArr, changed} = processLine(arr);
+        const finalArr = newArr.reverse();
+        for(let row = 0; row < 4; row++){
+            const cell = getCell(row, col);
+            updateCell(cell,finalArr[row]);
+        }
+        if (changed) {
+            flag = true;
+        }
+    }
+    if (flag) {
+        spawnRandomTile(Math.random() < 0.9 ? 2 : 4);
+    }
+}
+function moveLeft() {
+    var flag = false;
+    for(let row = 0; row < 4; row++){
+        const arr = makeRowArray(row);
+        const {newArr, changed} = processLine(arr);
+        for(let col = 0; col < 4; col++){
+            const cell = getCell(row, col);
+            updateCell(cell,newArr[col]);
+        }
+        if (changed) {
+            flag = true;
+        }
+    }
+    if (flag) {
+        spawnRandomTile(Math.random() < 0.9 ? 2 : 4);
+    }
+}
+function moveRight() {
+    var flag = false;
+    for(let row = 0; row < 4; row++){
+        const arr = makeRowArray(row).reverse();
+        const {newArr, changed} = processLine(arr);
+        const finalArr = newArr.reverse();
+        for(let col = 0; col < 4; col++){
+            const cell = getCell(row, col);
+            updateCell(cell,finalArr[col]);
+        }
+        if(changed)
+            flag = true;
+    }
+    if (flag) {
+        spawnRandomTile(Math.random() < 0.9 ? 2 : 4);
+    }
+}
 function scoreUpdate(newScore) {
     score = parseInt(scoreElement.textContent);
     score += newScore;
@@ -120,9 +257,6 @@ function createGrid() {
             cell.id = `cell-${i}-${j}`;
             cell.dataset.row = i;
             cell.dataset.col = j;
-            //let number = parseInt(cell.innerText);
-            //cell.innerHTML = cell.id;
-            //cell.textContent = '';
             row.appendChild(cell);
             gridCells[i][j] = cell;
         }
@@ -151,7 +285,6 @@ function spawnRandomTile(value) {
     const cell = empites[randomIndex];
     cell.textContent = String(value);
     cell.classList.add(`tile-${value}`);
-    //console.log(cell.id);
     return cell;
 }
 
