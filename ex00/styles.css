@@ -33,14 +33,15 @@ body {
     font-size: 24px;
     font-weight: bold;
 }
-.tile-2 {background-color: #eee4da;}
-.tile-4 {background-color: #ede0c8;}
-.tile-8 {background-color: #f2b179;}
-.tile-16 {background-color: #f59563;}
-.tile-32 {background-color: #f67c5f;}
-.tile-64 {background-color: #f65e3b;}
-.tile-128 {background-color: #edcf72;}
-.tile-256 {background-color: #edcc61;}
-.tile-512 {background-color: #edc850;}
-.tile-1024 {background-color: #edc53f;}
-.tile-2048 {background-color: #edc22e;}
+
+.tile-2 {background-color: #e3f2fd;}
+.tile-4 {background-color: #bbdefb;}    
+.tile-8 {background-color: #90caf9;}    
+.tile-16 {background-color: #64b5f6;}   
+.tile-32 {background-color: #42a5f5;}  
+.tile-64 {background-color: #2196f3;}   
+.tile-128 {background-color: #1e88e5;}  
+.tile-256 {background-color: #1976d2;}  
+.tile-512 {background-color: #1565c0;}  
+.tile-1024 {background-color: #0d47a1;} 
+.tile-2048 {background-color: #082567;}

@@ -74,7 +74,7 @@ function checkMove(event){
             moveUp();
         }
         else{
-            console.log('Game Over');
+            alert('Game Over');
         }
     }
     else if(event.key === 'ArrowDown'){
