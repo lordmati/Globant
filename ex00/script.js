@@ -75,6 +75,9 @@ function checkMove(event){
         }
         else{
             alert('Game Over');
+            clearGrid();
+            scoreReset();
+            spawnTwoStartingTiles();
         }
     }
     else if(event.key === 'ArrowDown'){
@@ -83,6 +86,9 @@ function checkMove(event){
         }
         else{
             alert('Game Over');
+            clearGrid();
+            scoreReset();
+            spawnTwoStartingTiles();
         }
     }
     else if(event.key === 'ArrowLeft'){
@@ -91,6 +97,9 @@ function checkMove(event){
         }
         else{
             alert('Game Over');
+            clearGrid();
+            scoreReset();
+            spawnTwoStartingTiles();
         }
     }
     else if(event.key === 'ArrowRight'){
@@ -99,6 +108,9 @@ function checkMove(event){
         }
         else{
             alert('Game Over');
+            clearGrid();
+            scoreReset();
+            spawnTwoStartingTiles();
         }
     }
 }
@@ -149,6 +161,12 @@ function processLine(arr){
     for (let i = 0; i < nums.length - 1; i++){
         if(nums[i] === nums[i + 1]){
             nums[i] *= 2;
+            if(nums[i] == 2048){
+                alert('You Wins');
+                    clearGrid();
+                    scoreReset();
+                    spawnTwoStartingTiles();
+            }
             nums.splice(i + 1, 1);
             scoreUpdate(nums[i]);
         }
