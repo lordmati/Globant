@@ -19,11 +19,6 @@ Cómo ejecutar
 
    - Simplemente abre `index.html` con tu navegador (doble clic o "Open File").
 
-
-```zsh
-
-```
-
 Controles
 
 - Flechas del teclado: mueve las fichas en la dirección indicada.
