@@ -82,7 +82,7 @@ function checkMove(event){
             moveDown();
         }
         else{
-            console.log('Game Over');
+            alert('Game Over');
         }
     }
     else if(event.key === 'ArrowLeft'){
@@ -90,7 +90,7 @@ function checkMove(event){
             moveLeft();
         }
         else{
-            console.log('Game Over');
+            alert('Game Over');
         }
     }
     else if(event.key === 'ArrowRight'){
@@ -98,7 +98,7 @@ function checkMove(event){
             moveRight();
         }
         else{
-            console.log('Game Over');
+            alert('Game Over');
         }
     }
 }
